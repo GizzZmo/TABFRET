@@ -57,3 +57,25 @@ MIT
 
 - [NAudio](https://github.com/naudio/NAudio)
 - [Melanchall DryWetMIDI](https://github.com/melanchall/drywetmidi)
+
+
+/MidiGuitarTab
+├── MidiGuitarTab.sln
+├── MidiGuitarTab/
+│   ├── App.xaml
+│   ├── App.xaml.cs
+│   ├── MainWindow.xaml
+│   ├── MainWindow.xaml.cs
+│   ├── Models/
+│   │   └── MidiNote.cs
+│   ├── Services/
+│   │   └── MidiParser.cs
+│   ├── ViewModels/
+│   │   └── MainViewModel.cs
+│   ├── Views/
+│   │   └── GuitarNeckView.xaml
+│   │   └── GuitarNeckView.xaml.cs
+│   └── Resources/
+│       └── guitar_neck.png
+├── README.md
+├── .gitignore
