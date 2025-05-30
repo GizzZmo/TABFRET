@@ -10,6 +10,7 @@ namespace TABFRET.Services
         private MidiOut midiOut;
         private MidiEventCollection midiEvents;
         private int ticksPerQuarter;
+        private bool isPlaying = false;
 
         public MidiPlaybackService()
         {
@@ -32,46 +33,37 @@ namespace TABFRET.Services
 
         public void Play()
         {
-            if (midiEvents == null) return;
-            var playback = new MidiOutPlayback(midiEvents, midiOut);
-            playback.Play();
+            if (midiEvents == null || isPlaying) return;
+
+            isPlaying = true;
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                foreach (var track in midiEvents)
+                {
+                    foreach (var midiEvent in track)
+                    {
+                        if (!isPlaying) break;
+                        if (midiEvent is NoteOnEvent noteOn)
+                            midiOut.Send(MidiMessage.StartNote(noteOn.NoteNumber, noteOn.Velocity, noteOn.Channel).RawData);
+                        else if (midiEvent is NoteEvent noteOff && noteOff.CommandCode == MidiCommandCode.NoteOff)
+                            midiOut.Send(MidiMessage.StopNote(noteOff.NoteNumber, 0, noteOff.Channel).RawData);
+
+                        System.Threading.Thread.Sleep(1); // Not accurate timing, but placeholder
+                    }
+                }
+                isPlaying = false;
+            });
         }
 
         public void Stop()
         {
+            isPlaying = false;
             midiOut?.Reset();
         }
 
         public void Dispose()
         {
             midiOut?.Dispose();
-        }
-    }
-
-    // Helper for simple playback (not ideal for real-time sync, for demo only)
-    public class MidiOutPlayback
-    {
-        private MidiEventCollection events;
-        private MidiOut midiOut;
-        public MidiOutPlayback(MidiEventCollection events, MidiOut midiOut)
-        {
-            this.events = events;
-            this.midiOut = midiOut;
-        }
-        public void Play()
-        {
-            // Naive sequential playback; use background thread/timer for better UX
-            foreach (var track in events)
-            {
-                foreach (var midiEvent in track)
-                {
-                    if (midiEvent is NoteOnEvent noteOn)
-                        midiOut.Send(MidiMessage.StartNote(noteOn.NoteNumber, noteOn.Velocity, noteOn.Channel).RawData);
-                    else if (midiEvent is NoteEvent noteOff && noteOff.CommandCode == MidiCommandCode.NoteOff)
-                        midiOut.Send(MidiMessage.StopNote(noteOff.NoteNumber, 0, noteOff.Channel).RawData);
-                    System.Threading.Thread.Sleep(1); // Real code should honor event timing!
-                }
-            }
         }
     }
 }
