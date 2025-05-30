@@ -1,5 +1,4 @@
 using System.Windows;
-using TABFRET.ViewModels;
 
 namespace TABFRET
 {
@@ -8,7 +7,6 @@ namespace TABFRET
         public MainWindow()
         {
             InitializeComponent();
-            // DataContext is set in XAML
         }
     }
 }
