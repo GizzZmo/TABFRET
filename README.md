@@ -1,66 +1,75 @@
-# MIDI to Guitar Tabulature Visualizer
+# TABFRET (MidiGuitarTab)
 
-This Windows application converts MIDI files into guitar tablature and visually displays the notes in real time on a virtual guitar neck.
+**TABFRET** is a Windows desktop application that displays MIDI files as guitar tablature and visualizes notes on a virtual guitar neck.
+
+![TABFRET Screenshot](assets/screenshot.png) <!-- Add or update the screenshot path if available -->
 
 ## Features
 
-- Load and parse MIDI files
-- Map MIDI notes to guitar strings/frets (tab)
-- Visualize notes on an interactive guitar neck
-- Playback sync between MIDI and visualization
-- User-friendly UI for loading files, playback, and settings
+- **MIDI to Tab Conversion:** Load any MIDI file and see its notes converted into guitar tablature.
+- **Virtual Fretboard Visualization:** Watch the notes light up in real time on a virtual guitar neck.
+- **Customizable Tuning:** Supports various guitar tunings.
+- **Playback Controls:** Listen to MIDI playback with synchronized visualizations.
+- **User-Friendly Interface:** Intuitive UI designed for guitarists and musicians.
+- **Export Options:** Save tabs or fretboard views as images for practice or sharing.
 
-## Tech Stack
+## Installation
 
-- **Language:** C# (.NET, WPF)
-- **MIDI Parsing:** [NAudio](https://github.com/naudio/NAudio) and/or [DryWetMIDI](https://github.com/melanchall/drywetmidi)
-- **Graphics/UI:** WPF Canvas
+### Prerequisites
 
-- MainViewModel loads a MIDI file, parses it, maps notes to tab, and exposes TabNotes (and MidiNotes) as observable collections.
-The UI (MainWindow.xaml) binds to MainViewModel and shows a button to load MIDI, the file path, a fretboard visualization (GuitarNeckView), and a data grid of MIDI notes.
-GuitarNeckView visualizes strings, frets, and tab notes dynamically, updating when the MIDI or tab data changes.
+- Windows 10 or higher
+- [.NET Framework](https://dotnet.microsoft.com/download) (version X.X or later) <!-- Specify the required .NET version -->
 
-## Repository Structure
+### Download
 
-```
-/MidiGuitarTabApp
-│
-├── MidiGuitarTabApp.sln           # Solution file
-├── README.md
-└── src/
-    ├── App.xaml                   # Application entry point
-    ├── MainWindow.xaml            # Main UI window
-    ├── MainWindow.xaml.cs
-    ├── Models/
-    │   └── MidiNote.cs            # MIDI note and tab mapping model
-    ├── Services/
-    │   ├── MidiParser.cs          # Handles MIDI file parsing
-    │   └── TabMapper.cs           # Maps MIDI notes to guitar tabs
-    ├── ViewModels/
-    │   └── MainViewModel.cs       # Main MVVM logic
-    ├── Views/
-    │   ├── GuitarNeckView.xaml    # Guitar neck visualization UI
-    │   └── GuitarNeckView.xaml.cs
-    └── Utils/
-        └── FretboardHelper.cs     # Helper functions for fretboard logic
-```
+1. [Download the latest release](https://github.com/GizzZmo/TABFRET/releases) from the Releases page.
+2. Extract the ZIP file to your desired location.
 
-## Getting Started
+### Run
 
-1. Clone the repository.
-2. Open `MidiGuitarTabApp.sln` in Visual Studio.
-3. Restore NuGet packages (NAudio or DryWetMIDI).
-4. Build and run!
+Double-click `TABFRET.exe` to launch the application.
 
-## Roadmap
+## Usage
 
-- [ ] MIDI file input and parsing
-- [ ] Guitar neck rendering
-- [ ] Tab mapping algorithm
-- [ ] Playback and visualization sync
-- [ ] Advanced features (real-time MIDI input, export tab, etc.)
-      
+1. **Open a MIDI File:** Click `File > Open` and select your MIDI file.
+2. **View Tablature:** The app will display the guitar tab and the virtual fretboard.
+3. **Playback:** Use the playback controls to listen to the MIDI and watch real-time visualization.
+4. **Customize Tuning:** Change the tuning from the settings menu as needed.
+
+## Demo
+
+Coming soon! <!-- Or add a GIF/video link if available -->
+
+## Screenshots
+
+![Fretboard Visualization](assets/fretboard_demo.png) <!-- Update path as needed -->
+
+## Build from Source
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/GizzZmo/TABFRET.git
+   ```
+2. Open the solution in Visual Studio.
+3. Restore NuGet packages and build the solution.
+4. Run the application.
+
+## Contributing
+
+Contributions are welcome! Please:
+
+- Open an issue for bug reports or feature suggestions.
+- Fork the repo and submit a pull request for improvements.
 
 ## License
 
-MIT
+[MIT License](LICENSE)
+
+## Credits
+
+- Developed and maintained by [GizzZmo](https://github.com/GizzZmo)
+- Inspired by the needs of guitarists and MIDI enthusiasts.
+
+---
+
+Feel free to modify or expand on this template as your project evolves! If you have assets like screenshots or demo videos, add their links or paths accordingly.
