@@ -64,12 +64,5 @@ namespace TABFRET.Services
                 return false;
             }
         }
-
-        // Transpose all loaded notes by N semitones
-        public void TransposeNotes(int semitones)
-        {
-            foreach (var note in Notes)
-                note.NoteNumber += semitones;
-        }
     }
 }
