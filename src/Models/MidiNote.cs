@@ -1,8 +1,5 @@
 namespace TABFRET.Models
 {
-    /// <summary>
-    /// Represents a MIDI note event, suitable for mapping to tablature.
-    /// </summary>
     public class MidiNote
     {
         public int NoteNumber { get; set; }
