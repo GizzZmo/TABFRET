@@ -1,7 +1,6 @@
-namespace TABFRET.ViewModels
+namespace TABFRET.ViewModels;
     
 using System.Collections.ObjectModel;
-
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TABFRET.Models;
