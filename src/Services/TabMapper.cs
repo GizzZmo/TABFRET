@@ -3,24 +3,16 @@ using TABFRET.Models;
 
 namespace TABFRET.Services
 {
-    /// <summary>
-    /// Maps MIDI notes to guitar tab positions (string, fret).
-    /// </summary>
     public class TabMapper
     {
-        // Standard tuning MIDI numbers for open strings (E2, A2, D3, G3, B3, E4)
         private static readonly int[] StringMidiRoots = { 40, 45, 50, 55, 59, 64 };
 
-        /// <summary>
-        /// Maps a list of MIDI notes to their best guitar tab positions.
-        /// </summary>
         public List<TabNote> MapMidiNotesToTab(List<MidiNote> midiNotes)
         {
             var tabNotes = new List<TabNote>();
 
             foreach (var note in midiNotes)
             {
-                // Find possible string/fret combos for the note (within 0-20 frets)
                 int bestString = -1;
                 int bestFret = -1;
                 int minFret = int.MaxValue;
