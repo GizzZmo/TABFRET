@@ -1,8 +1,11 @@
-using TABFRET.Models;
 using System.Threading.Tasks;
+using TABFRET.Models;
 
-public interface ISettingsService
+namespace TABFRET.Services
 {
-    Task<UserSettings> LoadAsync();
-    Task SaveAsync(UserSettings settings);
+    public interface ISettingsService
+    {
+        Task<UserSettings> LoadAsync();
+        Task SaveAsync(UserSettings settings);
+    }
 }
