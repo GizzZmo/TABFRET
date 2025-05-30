@@ -13,8 +13,12 @@ This Windows application converts MIDI files into guitar tablature and visually 
 ## Tech Stack
 
 - **Language:** C# (.NET, WPF)
-- **MIDI Parsing:** [NAudio](https://github.com/naudio/NAudio) or [DryWetMIDI](https://github.com/melanchall/drywetmidi)
+- **MIDI Parsing:** [NAudio](https://github.com/naudio/NAudio) and/or [DryWetMIDI](https://github.com/melanchall/drywetmidi)
 - **Graphics/UI:** WPF Canvas
+
+- MainViewModel loads a MIDI file, parses it, maps notes to tab, and exposes TabNotes (and MidiNotes) as observable collections.
+The UI (MainWindow.xaml) binds to MainViewModel and shows a button to load MIDI, the file path, a fretboard visualization (GuitarNeckView), and a data grid of MIDI notes.
+GuitarNeckView visualizes strings, frets, and tab notes dynamically, updating when the MIDI or tab data changes.
 
 ## Repository Structure
 
@@ -55,6 +59,7 @@ This Windows application converts MIDI files into guitar tablature and visually 
 - [ ] Tab mapping algorithm
 - [ ] Playback and visualization sync
 - [ ] Advanced features (real-time MIDI input, export tab, etc.)
+      
 
 ## License
 
