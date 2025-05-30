@@ -26,10 +26,10 @@ jobs:
     - name: Build in Release mode
       run: dotnet build ./src/TABFRET.csproj --configuration Release --no-restore
 
-    - name: Run tests (if you have tests)
-      run: dotnet test ./tests/YourTestProject.csproj --no-build --configuration Release
-      continue-on-error: true
-      if: exists('tests/YourTestProject.csproj')
+    //- name: Run tests (if you have tests)
+    //  run: dotnet test ./tests/YourTestProject.csproj --no-build --configuration Release
+    //  continue-on-error: true
+    //  if: exists('tests/YourTestProject.csproj')
 
     - name: Publish artifacts (optional)
       if: success()
