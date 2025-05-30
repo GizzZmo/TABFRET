@@ -1,0 +1,10 @@
+<UserControl x:Class="TABFRET.Views.GuitarNeckView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TABFRET.Views"
+             x:Name="GuitarNeckRoot"
+             >
+    <Grid>
+        <Canvas x:Name="FretboardCanvas" Background="Beige" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+    </Grid>
+</UserControl>
