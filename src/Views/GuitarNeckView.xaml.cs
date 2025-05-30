@@ -14,10 +14,20 @@ namespace TABFRET.Views
             DependencyProperty.Register("TabNotes", typeof(ObservableCollection<TabNote>), typeof(GuitarNeckView),
                 new PropertyMetadata(null, OnTabNotesChanged));
 
+        public static readonly DependencyProperty HighlightedTabNotesProperty =
+            DependencyProperty.Register("HighlightedTabNotes", typeof(ObservableCollection<TabNote>), typeof(GuitarNeckView),
+                new PropertyMetadata(null, OnHighlightedTabNotesChanged));
+
         public ObservableCollection<TabNote> TabNotes
         {
             get => (ObservableCollection<TabNote>)GetValue(TabNotesProperty);
             set => SetValue(TabNotesProperty, value);
+        }
+
+        public ObservableCollection<TabNote> HighlightedTabNotes
+        {
+            get => (ObservableCollection<TabNote>)GetValue(HighlightedTabNotesProperty);
+            set => SetValue(HighlightedTabNotesProperty, value);
         }
 
         public GuitarNeckView()
@@ -37,7 +47,24 @@ namespace TABFRET.Views
             }
         }
 
+        private static void OnHighlightedTabNotesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GuitarNeckView control)
+            {
+                if (e.OldValue is ObservableCollection<TabNote> oldCol)
+                    oldCol.CollectionChanged -= control.HighlightedTabNotes_CollectionChanged;
+                if (e.NewValue is ObservableCollection<TabNote> newCol)
+                    newCol.CollectionChanged += control.HighlightedTabNotes_CollectionChanged;
+                control.RenderFretboard();
+            }
+        }
+
         private void TabNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RenderFretboard();
+        }
+
+        private void HighlightedTabNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RenderFretboard();
         }
@@ -87,11 +114,13 @@ namespace TABFRET.Views
                     if (note.StringNumber < 1 || note.StringNumber > strings) continue;
                     double x = width / (frets - 1) * note.FretNumber;
                     double y = height / (strings - 1) * (note.StringNumber - 1);
+
+                    bool isHighlighted = HighlightedTabNotes != null && HighlightedTabNotes.Contains(note);
                     var ellipse = new Ellipse
                     {
                         Width = 20,
                         Height = 20,
-                        Fill = Brushes.Crimson,
+                        Fill = isHighlighted ? Brushes.LimeGreen : Brushes.Crimson,
                         Stroke = Brushes.Black,
                         StrokeThickness = 2
                     };
