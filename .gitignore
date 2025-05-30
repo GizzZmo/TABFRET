@@ -12,3 +12,7 @@ out/
 *.log
 *.userprefs
 *.DS_Store
+
+# Rider
+.idea/
+*.sln.iml
