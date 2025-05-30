@@ -6,5 +6,6 @@ namespace TABFRET.Models
         public long StartTimeTicks { get; set; }
         public long DurationTicks { get; set; }
         public int Velocity { get; set; }
+        public int Channel { get; set; }    // <-- Add this line
     }
 }
