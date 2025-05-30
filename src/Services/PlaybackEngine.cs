@@ -7,18 +7,18 @@ using TABFRET.Models;
 namespace TABFRET.Services
 {
     /// <summary>
-    /// Provides real-time playback and visualization sync for MIDI notes and tab notes.
+    /// Provides real-time playback and visualization sync for MIDI notes and tab notes, as well as metronome events, scrubbing, and BPM.
     /// </summary>
     public class PlaybackEngine : IDisposable
     {
         private CancellationTokenSource _cts;
         public event Action<long> PlaybackTick; // Notifies UI of the current playback position (in ticks)
         public event Action PlaybackStopped;
+        public event Action<long> MetronomeTick;
 
         private List<MidiNote> _notes;
         private int _ticksPerQuarter;
         private double _bpm;
-
         public bool IsPlaying { get; private set; }
         public long CurrentTick { get; private set; }
 
@@ -31,6 +31,12 @@ namespace TABFRET.Services
         {
             _notes = notes;
             _ticksPerQuarter = ticksPerQuarter;
+            _bpm = bpm;
+            CurrentTick = 0;
+        }
+
+        public void SetBpm(double bpm)
+        {
             _bpm = bpm;
         }
 
@@ -50,6 +56,12 @@ namespace TABFRET.Services
             PlaybackStopped?.Invoke();
         }
 
+        public void SeekToTick(long tick)
+        {
+            CurrentTick = tick;
+            PlaybackTick?.Invoke(CurrentTick);
+        }
+
         private async Task PlaybackLoop(CancellationToken token)
         {
             long maxTick = 0;
@@ -57,14 +69,13 @@ namespace TABFRET.Services
                 if (n.StartTimeTicks + n.DurationTicks > maxTick)
                     maxTick = n.StartTimeTicks + n.DurationTicks;
 
-            // Calculate ms per tick
             double msPerTick = (60000.0 / _bpm) / _ticksPerQuarter;
-
-            for (long tick = 0; tick <= maxTick; tick++)
+            for (long tick = CurrentTick; tick <= maxTick; tick++)
             {
                 if (token.IsCancellationRequested) break;
                 CurrentTick = tick;
                 PlaybackTick?.Invoke(tick);
+                if (tick % _ticksPerQuarter == 0) MetronomeTick?.Invoke(tick);
                 await Task.Delay((int)msPerTick, token);
             }
             IsPlaying = false;
