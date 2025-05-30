@@ -1,0 +1,42 @@
+name: .NET Build & Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x' # Adjust if you need another version
+
+    - name: Restore NuGet packages
+      run: dotnet restore ./src/TABFRET.csproj
+
+    - name: Build in Release mode
+      run: dotnet build ./src/TABFRET.csproj --configuration Release --no-restore
+
+    # Optional: Run tests if you have any
+    - name: Run tests
+      run: dotnet test ./tests/YourTestProject.csproj --no-build --configuration Release
+      if: exists('tests/YourTestProject.csproj')
+
+    # Optional: Publish artifacts for download/debugging
+    - name: Publish app
+      run: dotnet publish ./src/TABFRET.csproj --configuration Release --output ./publish --no-restore --no-build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: TABFRET
+        path: ./publish
