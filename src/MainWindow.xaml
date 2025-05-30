@@ -12,7 +12,12 @@
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
                 <Button Command="{Binding LoadMidiCommand}" Content="Open MIDI..." Width="100" Margin="0,0,10,0"/>
-                <TextBlock Text="{Binding CurrentFilePath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                <Button Command="{Binding PlaybackCommand}" Content="Play" Width="60" Margin="0,0,10,0"/>
+                <Button Command="{Binding TransposeUpCommand}" Content="Transpose +" Width="90"/>
+                <Button Command="{Binding TransposeDownCommand}" Content="Transpose -" Width="90" Margin="0,0,10,0"/>
+                <TextBlock Text="Semitones:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                <TextBlock Text="{Binding TransposeSemitones}" VerticalAlignment="Center" Margin="2,0"/>
+                <TextBlock Text="{Binding CurrentFilePath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="20,0,0,0"/>
             </StackPanel>
 
             <views:GuitarNeckView TabNotes="{Binding TabNotes}" Margin="10" />
