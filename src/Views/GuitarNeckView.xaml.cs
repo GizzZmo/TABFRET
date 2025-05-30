@@ -8,9 +8,6 @@ using TABFRET.Models;
 
 namespace TABFRET.Views
 {
-    /// <summary>
-    /// Visualizes the guitar neck and notes.
-    /// </summary>
     public partial class GuitarNeckView : UserControl
     {
         public static readonly DependencyProperty TabNotesProperty =
