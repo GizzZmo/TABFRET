@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TABFRET.Models;
 
-public interface IMidiParser
+namespace TABFRET.Services
 {
-    Task<IList<MidiNote>> ParseMidiFileAsync(string path);
+    public interface IMidiParser
+    {
+        Task<IList<MidiNote>> ParseMidiFileAsync(string path);
+    }
 }
