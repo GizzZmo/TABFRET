@@ -24,10 +24,10 @@ namespace TABFRET.Services
 
             var track = new List<MidiEvent>();
             foreach (var note in notes)
-            {
-                track.Add(new NoteOnEvent(note.StartTimeTicks, note.Channel, note.NoteNumber, note.Velocity, (int)note.DurationTicks);
-                track.Add(new NoteEvent(note.StartTimeTicks + note.DurationTicks, note.Channel, MidiCommandCode.NoteOff, note.NoteNumber, 0));
-            }
+                {
+                    track.Add(new NoteOnEvent(note.StartTimeTicks, note.Channel, note.NoteNumber, note.Velocity, (int)note.DurationTicks));
+                    track.Add(new NoteEvent(note.StartTimeTicks + note.DurationTicks, note.Channel, MidiCommandCode.NoteOff, note.NoteNumber, 0));
+                }
             midiEvents.AddTrack(track);
         }
 
