@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:TABFRET"
         xmlns:vm="clr-namespace:TABFRET.ViewModels"
         xmlns:views="clr-namespace:TABFRET.Views"
-        Title="MIDI to Guitar Tab Visualizer" Height="600" Width="900">
+        Title="MIDI to Guitar Tab Visualizer" Height="600" Width="1050">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
@@ -13,17 +13,20 @@
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
                 <Button Command="{Binding LoadMidiCommand}" Content="Open MIDI..." Width="100" Margin="0,0,10,0"/>
                 <Button Command="{Binding PlaybackCommand}" Content="Play" Width="60" Margin="0,0,10,0"/>
+                <Button Command="{Binding ExportTabCommand}" Content="Export Tab" Width="100" Margin="0,0,10,0"/>
                 <Button Command="{Binding TransposeUpCommand}" Content="Transpose +" Width="90"/>
                 <Button Command="{Binding TransposeDownCommand}" Content="Transpose -" Width="90" Margin="0,0,10,0"/>
-                <TextBlock Text="Semitones:" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                <TextBlock Text="{Binding TransposeSemitones}" VerticalAlignment="Center" Margin="2,0"/>
-                <TextBlock Text="{Binding CurrentFilePath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="20,0,0,0"/>
+                <ToggleButton IsChecked="{Binding MetronomeOn}" Content="Metronome" Width="90" Margin="0,0,10,0"/>
+                <Ellipse Width="24" Height="24" Margin="5,0"
+                         Fill="{Binding MetronomeBlink, Converter={StaticResource BoolToBrushConverter}}"/>
+                <Slider Minimum="40" Maximum="240" Value="{Binding BPM, Mode=TwoWay}" Width="100" Margin="10,0,0,0"/>
+                <TextBlock Text="{Binding BPM, StringFormat='BPM: {0}'}" VerticalAlignment="Center" Margin="5,0"/>
+                <Slider Minimum="0" Maximum="{Binding MaxPlaybackTick}" Value="{Binding PlaybackPosition, Mode=TwoWay}" Width="300" Margin="10,0,0,0"/>
                 <TextBlock Text="Tick:" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 <TextBlock Text="{Binding CurrentPlaybackTick}" VerticalAlignment="Center" Margin="2,0"/>
+                <TextBlock Text="{Binding CurrentFilePath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="20,0,0,0"/>
             </StackPanel>
-
             <views:GuitarNeckView TabNotes="{Binding TabNotes}" HighlightedTabNotes="{Binding HighlightedTabNotes}" Margin="10" />
-
             <DataGrid ItemsSource="{Binding MidiNotes}" DockPanel.Dock="Bottom" AutoGenerateColumns="True" 
                       Height="150" Margin="10" IsReadOnly="True"/>
         </DockPanel>
