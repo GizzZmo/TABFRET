@@ -4,26 +4,29 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using TABFRET.Models;
 
-public class MidiParserDryWetMidi : IMidiParser
+namespace TABFRET.Services
 {
-    public async Task<IList<MidiNote>> ParseMidiFileAsync(string path)
+    public class MidiParserDryWetMidi : IMidiParser
     {
-        return await Task.Run(() =>
+        public async Task<IList<MidiNote>> ParseMidiFileAsync(string path)
         {
-            var midiFile = MidiFile.Read(path);
-            var notes = midiFile.GetNotes();
-            var result = new List<MidiNote>();
-            foreach (var note in notes)
+            return await Task.Run(() =>
             {
-                result.Add(new MidiNote
+                var midiFile = MidiFile.Read(path);
+                var notes = midiFile.GetNotes();
+                var result = new List<MidiNote>();
+                foreach (var note in notes)
                 {
-                    NoteNumber = note.NoteNumber,
-                    StartTimeTicks = (long)note.Time,
-                    DurationTicks = (long)note.Length,
-                    Velocity = note.Velocity
-                });
-            }
-            return result;
-        });
+                    result.Add(new MidiNote
+                    {
+                        NoteNumber = note.NoteNumber,
+                        StartTimeTicks = (long)note.Time,
+                        DurationTicks = (long)note.Length,
+                        Velocity = note.Velocity
+                    });
+                }
+                return result;
+            });
+        }
     }
 }
