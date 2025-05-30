@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using TABFRET.Models;
 using TABFRET.Services;
@@ -7,6 +8,7 @@ using System.Windows.Input;
 using System.ComponentModel;
 using System.Windows;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TABFRET.ViewModels
 {
@@ -14,11 +16,12 @@ namespace TABFRET.ViewModels
     {
         private readonly MidiParser _midiParser = new MidiParser();
         private readonly TabMapper _tabMapper = new TabMapper();
-        private MidiPlaybackService _playbackService = new MidiPlaybackService();
+        private readonly MidiPlaybackService _playbackService = new MidiPlaybackService();
         private readonly PlaybackEngine _playbackEngine = new PlaybackEngine();
 
         public ObservableCollection<TabNote> TabNotes { get; } = new ObservableCollection<TabNote>();
         public ObservableCollection<MidiNote> MidiNotes { get; } = new ObservableCollection<MidiNote>();
+        public ObservableCollection<TabNote> HighlightedTabNotes { get; } = new ObservableCollection<TabNote>();
 
         private string _currentFilePath;
         public string CurrentFilePath
@@ -39,6 +42,27 @@ namespace TABFRET.ViewModels
             }
         }
 
+        private double _bpm = 120;
+        public double BPM
+        {
+            get => _bpm;
+            set { _bpm = value; OnPropertyChanged(nameof(BPM)); _playbackEngine.SetBpm(BPM); }
+        }
+
+        private bool _metronomeOn = true;
+        public bool MetronomeOn
+        {
+            get => _metronomeOn;
+            set { _metronomeOn = value; OnPropertyChanged(nameof(MetronomeOn)); }
+        }
+
+        private bool _metronomeBlink;
+        public bool MetronomeBlink
+        {
+            get => _metronomeBlink;
+            set { _metronomeBlink = value; OnPropertyChanged(nameof(MetronomeBlink)); }
+        }
+
         private long _currentPlaybackTick;
         public long CurrentPlaybackTick
         {
@@ -46,12 +70,27 @@ namespace TABFRET.ViewModels
             set { _currentPlaybackTick = value; OnPropertyChanged(nameof(CurrentPlaybackTick)); }
         }
 
-        public ObservableCollection<TabNote> HighlightedTabNotes { get; } = new ObservableCollection<TabNote>();
+        private double _playbackPosition;
+        public double PlaybackPosition
+        {
+            get => _playbackPosition;
+            set
+            {
+                _playbackPosition = value;
+                OnPropertyChanged(nameof(PlaybackPosition));
+                // Implement scrubbing
+                if (_playbackEngine.IsPlaying) _playbackEngine.SeekToTick((long)_playbackPosition);
+            }
+        }
+
+        public long MaxPlaybackTick => TabNotes.Any() ? TabNotes.Max(t => t.StartTimeTicks + t.DurationTicks) : 0;
 
         public ICommand LoadMidiCommand { get; }
         public ICommand PlaybackCommand { get; }
         public ICommand TransposeUpCommand { get; }
         public ICommand TransposeDownCommand { get; }
+        public ICommand ExportTabCommand { get; }
+        public ICommand ToggleMetronomeCommand { get; }
 
         public MainViewModel()
         {
@@ -59,9 +98,12 @@ namespace TABFRET.ViewModels
             PlaybackCommand = new RelayCommand(_ => PlayMidi());
             TransposeUpCommand = new RelayCommand(_ => { TransposeSemitones++; });
             TransposeDownCommand = new RelayCommand(_ => { TransposeSemitones--; });
+            ExportTabCommand = new RelayCommand(_ => ExportTab());
+            ToggleMetronomeCommand = new RelayCommand(_ => MetronomeOn = !MetronomeOn);
 
             _playbackEngine.PlaybackTick += OnPlaybackTick;
             _playbackEngine.PlaybackStopped += OnPlaybackStopped;
+            _playbackEngine.MetronomeTick += OnMetronomeTick;
         }
 
         public void LoadMidiFile()
@@ -104,14 +146,14 @@ namespace TABFRET.ViewModels
                 TabNotes.Add(tabNote);
 
             _playbackService.LoadMidiEvents(notes, _midiParser.TicksPerQuarterNote);
-            _playbackEngine.Load(notes, _midiParser.TicksPerQuarterNote);
+            _playbackEngine.Load(notes, _midiParser.TicksPerQuarterNote, BPM);
+            OnPropertyChanged(nameof(MaxPlaybackTick));
         }
 
         public void PlayMidi()
         {
             _playbackService.Play();
 
-            // Prepare notes for visualization (use the mapped notes to include transposition)
             var midiNotesForPlayback = TabNotes.Select(tn => new MidiNote
             {
                 NoteNumber = tn.OriginalMidiNoteNumber,
@@ -121,13 +163,35 @@ namespace TABFRET.ViewModels
                 Velocity = 100
             }).ToList();
 
-            _playbackEngine.Load(midiNotesForPlayback, _midiParser.TicksPerQuarterNote);
+            _playbackEngine.Load(midiNotesForPlayback, _midiParser.TicksPerQuarterNote, BPM);
             _playbackEngine.Play();
+        }
+
+        public void ExportTab()
+        {
+            var dlg = new SaveFileDialog
+            {
+                Filter = "Text Files (*.txt)|*.txt",
+                Title = "Export Tab File",
+                FileName = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath) + "_tab.txt"
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                using (var sw = new System.IO.StreamWriter(dlg.FileName))
+                {
+                    foreach (var tabNote in TabNotes.OrderBy(n => n.StartTimeTicks))
+                    {
+                        sw.WriteLine($"Tick {tabNote.StartTimeTicks}: String {tabNote.StringNumber}, Fret {tabNote.FretNumber}");
+                    }
+                }
+                MessageBox.Show("Tab exported!", "Export", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void OnPlaybackTick(long tick)
         {
             CurrentPlaybackTick = tick;
+            PlaybackPosition = tick;
             HighlightedTabNotes.Clear();
             foreach (var note in TabNotes)
             {
@@ -139,6 +203,14 @@ namespace TABFRET.ViewModels
         private void OnPlaybackStopped()
         {
             HighlightedTabNotes.Clear();
+        }
+
+        private void OnMetronomeTick(long tick)
+        {
+            if (!MetronomeOn) return;
+            MetronomeBlink = true;
+            Task.Delay(100).ContinueWith(_ => MetronomeBlink = false);
+            System.Media.SystemSounds.Beep.Play();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
