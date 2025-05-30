@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Windows;
+using System.Linq;
 
 namespace TABFRET.ViewModels
 {
@@ -14,6 +15,7 @@ namespace TABFRET.ViewModels
         private readonly MidiParser _midiParser = new MidiParser();
         private readonly TabMapper _tabMapper = new TabMapper();
         private MidiPlaybackService _playbackService = new MidiPlaybackService();
+        private readonly PlaybackEngine _playbackEngine = new PlaybackEngine();
 
         public ObservableCollection<TabNote> TabNotes { get; } = new ObservableCollection<TabNote>();
         public ObservableCollection<MidiNote> MidiNotes { get; } = new ObservableCollection<MidiNote>();
@@ -37,6 +39,15 @@ namespace TABFRET.ViewModels
             }
         }
 
+        private long _currentPlaybackTick;
+        public long CurrentPlaybackTick
+        {
+            get => _currentPlaybackTick;
+            set { _currentPlaybackTick = value; OnPropertyChanged(nameof(CurrentPlaybackTick)); }
+        }
+
+        public ObservableCollection<TabNote> HighlightedTabNotes { get; } = new ObservableCollection<TabNote>();
+
         public ICommand LoadMidiCommand { get; }
         public ICommand PlaybackCommand { get; }
         public ICommand TransposeUpCommand { get; }
@@ -48,6 +59,9 @@ namespace TABFRET.ViewModels
             PlaybackCommand = new RelayCommand(_ => PlayMidi());
             TransposeUpCommand = new RelayCommand(_ => { TransposeSemitones++; });
             TransposeDownCommand = new RelayCommand(_ => { TransposeSemitones--; });
+
+            _playbackEngine.PlaybackTick += OnPlaybackTick;
+            _playbackEngine.PlaybackStopped += OnPlaybackStopped;
         }
 
         public void LoadMidiFile()
@@ -75,23 +89,56 @@ namespace TABFRET.ViewModels
 
         private void UpdateTabNotes()
         {
-            var notes = new List<MidiNote>(_midiParser.Notes);
-            if (TransposeSemitones != 0)
+            var notes = _midiParser.Notes.Select(n => new MidiNote
             {
-                foreach (var note in notes)
-                    note.NoteNumber = FretboardHelper.Transpose(note.NoteNumber, TransposeSemitones);
-            }
+                NoteNumber = FretboardHelper.Transpose(n.NoteNumber, TransposeSemitones),
+                StartTimeTicks = n.StartTimeTicks,
+                DurationTicks = n.DurationTicks,
+                Channel = n.Channel,
+                Velocity = n.Velocity
+            }).ToList();
+
             var tabNotes = _tabMapper.MapMidiNotesToTab(notes);
             TabNotes.Clear();
             foreach (var tabNote in tabNotes)
                 TabNotes.Add(tabNote);
 
             _playbackService.LoadMidiEvents(notes, _midiParser.TicksPerQuarterNote);
+            _playbackEngine.Load(notes, _midiParser.TicksPerQuarterNote);
         }
 
         public void PlayMidi()
         {
             _playbackService.Play();
+
+            // Prepare notes for visualization (use the mapped notes to include transposition)
+            var midiNotesForPlayback = TabNotes.Select(tn => new MidiNote
+            {
+                NoteNumber = tn.OriginalMidiNoteNumber,
+                StartTimeTicks = tn.StartTimeTicks,
+                DurationTicks = tn.DurationTicks,
+                Channel = 0,
+                Velocity = 100
+            }).ToList();
+
+            _playbackEngine.Load(midiNotesForPlayback, _midiParser.TicksPerQuarterNote);
+            _playbackEngine.Play();
+        }
+
+        private void OnPlaybackTick(long tick)
+        {
+            CurrentPlaybackTick = tick;
+            HighlightedTabNotes.Clear();
+            foreach (var note in TabNotes)
+            {
+                if (tick >= note.StartTimeTicks && tick < note.StartTimeTicks + note.DurationTicks)
+                    HighlightedTabNotes.Add(note);
+            }
+        }
+
+        private void OnPlaybackStopped()
+        {
+            HighlightedTabNotes.Clear();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
