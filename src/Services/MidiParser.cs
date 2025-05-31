@@ -9,7 +9,7 @@ namespace TABFRET.Services
     {
         public List<MidiNote> Notes { get; private set; } = new List<MidiNote>();
         public int TicksPerQuarterNote { get; private set; } = 480;
-        public string ErrorMessage { get; private set; }
+        public string? ErrorMessage { get; private set; }
 
         public bool LoadMidiFile(string filePath)
         {
