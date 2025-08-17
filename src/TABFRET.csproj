@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>TABFRET</RootNamespace>
     <Nullable>enable</Nullable>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>

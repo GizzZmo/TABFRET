@@ -11,12 +11,12 @@ namespace TABFRET.Services
     /// </summary>
     public class PlaybackEngine : IDisposable
     {
-        private CancellationTokenSource _cts;
-        public event Action<long> PlaybackTick; // Notifies UI of the current playback position (in ticks)
-        public event Action PlaybackStopped;
-        public event Action<long> MetronomeTick;
+    private CancellationTokenSource _cts = new();
+    public event Action<long> PlaybackTick = delegate { };
+    public event Action PlaybackStopped = delegate { };
+    public event Action<long> MetronomeTick = delegate { };
 
-        private List<MidiNote> _notes;
+    private List<MidiNote> _notes = new();
         private int _ticksPerQuarter;
         private double _bpm;
         public bool IsPlaying { get; private set; }
@@ -63,24 +63,34 @@ namespace TABFRET.Services
         }
 
         private async Task PlaybackLoop(CancellationToken token)
-        {
-            long maxTick = 0;
-            foreach (var n in _notes)
-                if (n.StartTimeTicks + n.DurationTicks > maxTick)
-                    maxTick = n.StartTimeTicks + n.DurationTicks;
-
-            double msPerTick = (60000.0 / _bpm) / _ticksPerQuarter;
-            for (long tick = CurrentTick; tick <= maxTick; tick++)
             {
-                if (token.IsCancellationRequested) break;
-                CurrentTick = tick;
-                PlaybackTick?.Invoke(tick);
-                if (tick % _ticksPerQuarter == 0) MetronomeTick?.Invoke(tick);
-                await Task.Delay((int)msPerTick, token);
+                try
+                {
+                    long maxTick = 0;
+                    foreach (var n in _notes)
+                        if (n.StartTimeTicks + n.DurationTicks > maxTick)
+                            maxTick = n.StartTimeTicks + n.DurationTicks;
+
+                    double msPerTick = (60000.0 / _bpm) / _ticksPerQuarter;
+                    for (long tick = CurrentTick; tick <= maxTick; tick++)
+                    {
+                        if (token.IsCancellationRequested) break;
+                        CurrentTick = tick;
+                        PlaybackTick?.Invoke(tick);
+                        if (tick % _ticksPerQuarter == 0) MetronomeTick?.Invoke(tick);
+                        await Task.Delay((int)msPerTick, token);
+                    }
+                }
+                catch (Exception)
+                {
+                    PlaybackStopped?.Invoke();
+                }
+                finally
+                {
+                    IsPlaying = false;
+                    PlaybackStopped?.Invoke();
+                }
             }
-            IsPlaying = false;
-            PlaybackStopped?.Invoke();
-        }
 
         public void Dispose()
         {

@@ -1,0 +1,27 @@
+<UserControl x:Class="TABFRET.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:TABFRET.ViewModels"
+             xmlns:local="clr-namespace:TABFRET.Views"
+             Height="300" Width="400">
+    <UserControl.DataContext>
+        <vm:MainViewModel/>
+    </UserControl.DataContext>
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Settings" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+            <TextBlock Text="Theme:"/>
+            <ComboBox SelectedItem="{Binding Settings.Theme, Mode=TwoWay}" Width="200">
+                <ComboBoxItem Content="Default"/>
+                <ComboBoxItem Content="Dark"/>
+                <ComboBoxItem Content="Light"/>
+            </ComboBox>
+            <TextBlock Text="Number of Strings:" Margin="0,10,0,0"/>
+            <TextBox Text="{Binding Settings.NumberOfStrings, Mode=TwoWay}" Width="50"/>
+            <TextBlock Text="Tuning (comma-separated MIDI notes):" Margin="0,10,0,0"/>
+            <TextBox Text="{Binding TuningString, Mode=TwoWay}" Width="200"/>
+            <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" Margin="0,20,0,0" Width="120"/>
+            <TextBlock Text="{Binding StatusMessage}" Foreground="Red" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

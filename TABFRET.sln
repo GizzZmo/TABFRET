@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TABFRET", "src\TABFRET.csproj", "{D6FB3BA6-3ABE-5F6F-1F44-F0B54DA4DEDB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TABFRET.Tests", "tests\TABFRET.Tests\TABFRET.Tests.csproj", "{0969E7AC-20C1-3F00-56CC-CCDC958E5BB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6FB3BA6-3ABE-5F6F-1F44-F0B54DA4DEDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6FB3BA6-3ABE-5F6F-1F44-F0B54DA4DEDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6FB3BA6-3ABE-5F6F-1F44-F0B54DA4DEDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6FB3BA6-3ABE-5F6F-1F44-F0B54DA4DEDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0969E7AC-20C1-3F00-56CC-CCDC958E5BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0969E7AC-20C1-3F00-56CC-CCDC958E5BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0969E7AC-20C1-3F00-56CC-CCDC958E5BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0969E7AC-20C1-3F00-56CC-CCDC958E5BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0969E7AC-20C1-3F00-56CC-CCDC958E5BB6} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04F45851-2623-4547-A29D-3B51D9C3940D}
+	EndGlobalSection
+EndGlobal

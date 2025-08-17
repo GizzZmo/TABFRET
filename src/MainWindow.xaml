@@ -8,17 +8,19 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <Grid>
+    <Grid AllowDrop="True" Drop="MainWindow_Drop">
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
                 <Button Command="{Binding LoadMidiCommand}" Content="Open MIDI..." Width="100" Margin="0,0,10,0"/>
-                <Button Command="{Binding PlaybackCommand}" Content="Play" Width="60" Margin="0,0,10,0"/>
+                <Button Command="{Binding PlayCommand}" Content="Play" Width="60" Margin="0,0,10,0"/>
+                <Button Command="{Binding PauseCommand}" Content="Pause" Width="60" Margin="0,0,10,0"/>
+                <Button Command="{Binding ResumeCommand}" Content="Resume" Width="70" Margin="0,0,10,0"/>
                 <Button Command="{Binding ExportTabCommand}" Content="Export Tab" Width="100" Margin="0,0,10,0"/>
                 <Button Command="{Binding TransposeUpCommand}" Content="Transpose +" Width="90"/>
                 <Button Command="{Binding TransposeDownCommand}" Content="Transpose -" Width="90" Margin="0,0,10,0"/>
-                <ToggleButton IsChecked="{Binding MetronomeOn}" Content="Metronome" Width="90" Margin="0,0,10,0"/>
-                <Ellipse Width="24" Height="24" Margin="5,0"
-                         Fill="{Binding MetronomeBlink, Converter={StaticResource BoolToBrushConverter}}"/>
+                <ToggleButton IsChecked="{Binding IsMetronomeOn}" Content="Metronome" Width="90" Margin="0,0,10,0"/>
+                <Slider Minimum="0.5" Maximum="2.0" Value="{Binding PlaybackSpeed, Mode=TwoWay}" Width="100" Margin="10,0,0,0"/>
+                <TextBlock Text="{Binding PlaybackSpeed, StringFormat='Speed: {0:F1}x'}" VerticalAlignment="Center" Margin="5,0"/>
                 <Slider Minimum="40" Maximum="240" Value="{Binding BPM, Mode=TwoWay}" Width="100" Margin="10,0,0,0"/>
                 <TextBlock Text="{Binding BPM, StringFormat='BPM: {0}'}" VerticalAlignment="Center" Margin="5,0"/>
                 <Slider Minimum="0" Maximum="{Binding MaxPlaybackTick}" Value="{Binding PlaybackPosition, Mode=TwoWay}" Width="300" Margin="10,0,0,0"/>
@@ -29,6 +31,19 @@
             <views:GuitarNeckView TabNotes="{Binding TabNotes}" HighlightedTabNotes="{Binding HighlightedTabNotes}" Margin="10" />
             <DataGrid ItemsSource="{Binding MidiNotes}" DockPanel.Dock="Bottom" AutoGenerateColumns="True" 
                       Height="150" Margin="10" IsReadOnly="True"/>
+            <!-- Status Bar for user feedback -->
+            <StatusBar DockPanel.Dock="Bottom" Margin="0,0,0,0">
+                <StatusBarItem>
+                    <TextBlock Text="{Binding StatusMessage}" FontWeight="SemiBold" Foreground="#333333"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding CurrentFilePath}" FontStyle="Italic" Foreground="#555555"/>
+                </StatusBarItem>
+            </StatusBar>
+            <!-- Loading indicator -->
+            <Grid Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}" Background="#80000000" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
         </DockPanel>
     </Grid>
 </Window>

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using TABFRET.Models;
@@ -10,23 +12,29 @@ namespace TABFRET.Services
     {
         public async Task<IList<MidiNote>> ParseMidiFileAsync(string path)
         {
-            return await Task.Run(() =>
+            try
             {
-                var midiFile = MidiFile.Read(path);
-                var notes = midiFile.GetNotes();
-                var result = new List<MidiNote>();
-                foreach (var note in notes)
+                return await Task.Run(() =>
                 {
-                    result.Add(new MidiNote
+                    var midiFile = MidiFile.Read(path);
+                    var notes = midiFile.GetNotes();
+                    var noteList = notes as IList<Note> ?? new List<Note>(notes);
+                    var result = new List<MidiNote>(noteList.Count);
+                    result.AddRange(noteList.Select(note => new MidiNote
                     {
                         NoteNumber = note.NoteNumber,
                         StartTimeTicks = (long)note.Time,
                         DurationTicks = (long)note.Length,
                         Velocity = note.Velocity
-                    });
-                }
-                return result;
-            });
+                    }));
+                    return result;
+                });
+            }
+            catch (Exception)
+            {
+                // Optionally log exception for diagnostics
+                return new List<MidiNote>();
+            }
         }
     }
 }
