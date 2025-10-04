@@ -1,5 +1,8 @@
 # TABFRET (MidiGuitarTab)
 
+[![CI Build & Test](https://github.com/GizzZmo/TABFRET/actions/workflows/ci.yml/badge.svg)](https://github.com/GizzZmo/TABFRET/actions/workflows/ci.yml)
+[![Release](https://github.com/GizzZmo/TABFRET/actions/workflows/release.yml/badge.svg)](https://github.com/GizzZmo/TABFRET/actions/workflows/release.yml)
+
 **TABFRET** is a Windows desktop application that displays MIDI files as guitar tablature and visualizes notes on a virtual guitar neck.
 
 ![TABFRET Screenshot](assets/screenshot.png) <!-- Add or update the screenshot path if available -->
@@ -18,7 +21,7 @@
 ### Prerequisites
 
 - Windows 10 or higher
-- [.NET Framework](https://dotnet.microsoft.com/download) (version X.X or later) <!-- Specify the required .NET version -->
+- .NET 6.0 Runtime (Desktop) or later
 
 ### Download
 
@@ -46,13 +49,32 @@ Coming soon! <!-- Or add a GIF/video link if available -->
 
 ## Build from Source
 
+### Requirements
+
+- Windows 10 or higher
+- Visual Studio 2022 or later (or Visual Studio Code with C# extension)
+- .NET 6.0 SDK
+
+### Steps
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/GizzZmo/TABFRET.git
    ```
-2. Open the solution in Visual Studio.
-3. Restore NuGet packages and build the solution.
-4. Run the application.
+2. Open the solution in Visual Studio or your preferred IDE.
+3. Restore NuGet packages and build the solution:
+   ```bash
+   dotnet restore TABFRET.sln
+   dotnet build TABFRET.sln --configuration Release
+   ```
+4. Run the application:
+   ```bash
+   dotnet run --project src/TABFRET.csproj
+   ```
+
+### CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment. See the [CI/CD documentation](.github/workflows/README.md) for more details.
 
 ## Contributing
 
