@@ -1,15 +1,16 @@
-name: CI Build & Test
+name: Release
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
 
 jobs:
-  build:
+  release:
     runs-on: windows-latest
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout repository
@@ -32,23 +33,17 @@ jobs:
     - name: Publish application
       run: dotnet publish ./src/TABFRET.csproj --configuration Release --output ./publish --no-build
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: TABFRET-build-${{ github.sha }}
-        path: ./publish
-        retention-days: 30
-
     - name: Create release package
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       run: |
         cd publish
-        Compress-Archive -Path * -DestinationPath ../TABFRET-Release.zip
+        Compress-Archive -Path * -DestinationPath ../TABFRET-${{ github.ref_name }}.zip
 
-    - name: Upload release package
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v4
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
       with:
-        name: TABFRET-Release-${{ github.sha }}
-        path: TABFRET-Release.zip
-        retention-days: 90
+        files: TABFRET-${{ github.ref_name }}.zip
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
