@@ -200,6 +200,8 @@ Circle at fret 0 = Play open string (no fret pressed)
 
 ## Documentation
 
+> 📚 **Complete Documentation Available**: TABFRET has comprehensive documentation covering everything from installation to advanced development. See the **[Documentation Index](docs/INDEX.md)** for a complete overview, or **[DOCUMENTATION.md](DOCUMENTATION.md)** for detailed information about all available documentation.
+
 ### For Users
 
 - **[User Guide](USER_GUIDE.md)**: Comprehensive guide for end users
