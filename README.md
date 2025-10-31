@@ -567,7 +567,6 @@ Special thanks to:
 
 - 📢 **[Releases](https://github.com/GizzZmo/TABFRET/releases)**: Download the latest version
 - 📝 **[Changelog](https://github.com/GizzZmo/TABFRET/releases)**: See what's new
-- 🐦 **Follow** [@GizzZmo](https://github.com/GizzZmo) for updates (if social media available)
 
 ---
 

@@ -2,7 +2,7 @@
 
 This guide provides detailed information about the TABFRET codebase, explaining each file, class, and component in the project.
 
-> **Note:** This is extracted from the original HowTo.txt file and converted to markdown for better readability. For high-level architecture, see [ARCHITECTURE.md](ARCHITECTURE.md).
+> **Note:** This comprehensive code guide documents the complete structure and implementation of TABFRET. For high-level architecture, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Table of Contents
 

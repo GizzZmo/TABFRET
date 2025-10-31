@@ -262,12 +262,12 @@ TABFRET uses an algorithm to map MIDI notes to guitar positions:
 
 **Current Limitation:**
 - Current version uses fixed playback speed
-- Not reading actual MIDI tempo
+- Not reading actual MIDI tempo (planned for v2.0)
 
 **Workaround:**
 - None currently available
 
-**Future Release:**
+**Future Release (v2.0):**
 - Proper tempo reading from MIDI
 - Speed control slider
 - Tempo change support

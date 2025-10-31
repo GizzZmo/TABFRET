@@ -173,8 +173,9 @@ Not currently. The app uses standard tuning (EADGBe) only. **Alternate tuning su
 
 ### Can I change the colors?
 
-Color customization isn't available in the current UI, but you can modify the `settings.json` file:
+Color customization isn't available in the current UI. This feature is planned for a future release.
 
+**Future Feature**: You will be able to modify settings.json:
 ```json
 {
   "VisualSettings": {

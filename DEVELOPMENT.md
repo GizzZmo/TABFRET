@@ -266,6 +266,10 @@ dotnet test TABFRET.sln --verbosity detailed
 
 #### With Code Coverage
 ```bash
+# Modern approach (recommended)
+dotnet test TABFRET.sln --collect:"XPlat Code Coverage"
+
+# Legacy approach
 dotnet test TABFRET.sln /p:CollectCoverage=true
 ```
 

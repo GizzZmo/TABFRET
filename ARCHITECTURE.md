@@ -449,6 +449,8 @@ Future versions could support:
 
 ### Potential Evolutions
 
+> **Note:** These are conceptual ideas for discussion and long-term consideration, not committed roadmap items. Actual implementation would depend on project direction, community feedback, and resource availability.
+
 1. **Microservices**: Separate parsing service
 2. **Cloud Storage**: Save/load from cloud
 3. **Real-time Collaboration**: Multi-user editing

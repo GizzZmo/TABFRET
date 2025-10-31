@@ -182,8 +182,8 @@ For understanding the automated build and release process:
 
 ## 📊 Documentation Statistics
 
-- **Total Documentation Files**: 12+
-- **Total Content**: ~100KB of documentation
+- **Total Documentation Files**: 14+
+- **Total Content**: ~140KB of documentation
 - **Languages**: English
 - **Format**: Markdown (.md)
 
